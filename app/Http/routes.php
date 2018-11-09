@@ -34,6 +34,7 @@ Route::get('dengvaxia/finish/{id}','DengvaxiaCtrl@finish');
 //REPORT
 Route::get('report/status','ReportCtrl@status');
 Route::post('report/status','ReportCtrl@status');
+Route::get('report/crossMatching','ReportCtrl@crossMatching');
 Route::get('report/monthly','ReportCtrl@monthly');
 Route::post('report/monthly','ReportCtrl@monthly');
 Route::get('report/online','ReportCtrl@online');
@@ -91,6 +92,9 @@ Route::get('user/home/chart','ClientCtrl@chart');
 Route::get('user/home/count','ClientCtrl@count');
 
 //end count
+//admin population
+Route::get('admin/population/{provinceId}/{muncityId}','ReportCtrl@population');
+Route::post('admin/population/{provinceId}/{muncityId}','ReportCtrl@searchPopulation');
 //population
 Route::get('user/population','ClientCtrl@population');
 Route::post('user/population','ClientCtrl@searchPopulation');

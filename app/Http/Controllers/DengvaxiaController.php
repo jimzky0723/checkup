@@ -351,9 +351,10 @@ class DengvaxiaController extends Controller
     }
 
     public function crossMatching($provinceId,$muncityId){
-        $data = [];
+        $data_tsekap = [];
         $dengvaxia = Dengvaxia::where("province_id","=",$provinceId)
             ->where('muncity_id','=',$muncityId)
+            ->where('status','=',1)
             ->get(["id","unique_id","tsekap_id","fname","lname","province_id","muncity_id","dob"]);
 
         foreach( $dengvaxia as $deng ){
@@ -364,18 +365,22 @@ class DengvaxiaController extends Controller
                 ->where('dob','=',date("Y-m-d",strtotime($deng->dob)))
                 ->where('dengvaxia','!=','yes')
                 ->first()){
-                Dengvaxia::where("id","=",$deng->id)->where('tsekap_id','!=',' ')->first()->update([
+
+                $data_tsekap[] = $tsekap;
+
+                $dengvaxia = Dengvaxia::where("id","=",$deng->id)->first();
+                $dengvaxia->update([
                     "unique_id" => $tsekap->unique_id,
                     "tsekap_id" =>  $tsekap->id
                 ]);
+
                 $tsekap->update([
                     "dengvaxia" => "yes"
                 ]);
-                $data[] = $tsekap;
             }
         }
 
-        Session::flash('crossMatch',count($data)." patient has been cross match");
+        Session::flash('crossMatch',count($data_tsekap)." patient has been cross match");
         return redirect()->back();
     }
 
