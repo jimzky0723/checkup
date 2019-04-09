@@ -127,7 +127,26 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-users"></i> Population<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url('population') }}"><i class="fa fa-users"></i>&nbsp;&nbsp; List of Population</a></li>
-                        <li><a href="{{ asset('population/less')  }}"><i class="fa fa-user-times"></i>&nbsp;&nbsp; Lacking 3 MUST Services<br />(PE, Laboratory and Other Services)</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-submenu">
+                            <a href="#"><i class="fa fa-building"></i>&nbsp;&nbsp; Manage Population</a>
+                            <ul class="dropdown-menu">
+                                @foreach(\App\Province::get() as $pro)
+                                    <li class="dropdown-submenu">
+                                        <a href="#" data-toggle="dropdown"><i class="fa fa-file"></i> {{ $pro->description }}</a>
+                                        <ul class="dropdown-menu">
+                                            @foreach(\App\Muncity::where('province_id','=',$pro->id)->get() as $mun)
+                                                <li><a href="{{ url('admin/population/'.$pro->id.'/'.$mun->id) }}"><i class="fa fa-sticky-note"></i> {{ $mun->description }} </a></li>
+                                                <li class="divider"></li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                    <li class="divider"></li>
+                                @endforeach
+                            </ul>
+                        </li>
+
+                        <!-- <li><a href="{{ asset('population/less')  }}"><i class="fa fa-user-times"></i>&nbsp;&nbsp; Lacking 3 MUST Services<br />(PE, Laboratory and Other Services)</a></li> -->
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -135,6 +154,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ asset('/report/status')  }}"><i class="fa fa-table"></i>&nbsp;&nbsp; Status Report</a></li>
                         <li><a href="{{ asset('/report/monthly') }}"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; Monthly Report</a></li>
+                        <li><a href="{{ asset('/report/crossMatching') }}"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; Cross Matching Report</a></li>
                     </ul>
                 </li>
                 @if(Auth::user()->user_priv==1)

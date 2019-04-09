@@ -91,6 +91,101 @@ class ReportCtrl extends Controller
         ]);
     }
 
+    public function crossMatching(Request $req)
+    {
+        $municipality = Muncity::select('muncity.description','muncity.id',DB::raw("count(muncity.id) as tsekapProfiled"))
+                        ->leftJoin('profile','profile.muncity_id','=','muncity.id')
+                        ->where('muncity.province_id','=',2)
+                        ->groupBy('muncity.id')
+                        ->get();
+        return view('report.crossMatching',[
+            "municipality" => $municipality
+        ]);
+    }
+
+    public function population($provinceId,$municipalityId){
+        $data['provinceId'] = $provinceId;
+        $data['municipalityId'] = $municipalityId;
+
+        $temp = Session::get('profileKeyword');
+
+        $keyword = $temp['keyword'];
+        $head = $temp['familyHead'];
+        $sex = $temp['sex'];
+        $barangay = $temp['barangay'];
+
+        $user = Auth::user();
+        $data['profiles'] = Profile::select('id','unique_id','familyID','head','lname','mname','fname','suffix','sex','dob','province_id','muncity_id','barangay_id','dengvaxia')
+            ->where('barangay_id','!=',0);
+
+        if($keyword || $keyword!='' || $keyword!=null){
+            $data['profiles'] =  $data['profiles']->where(function($q) use ($keyword){
+                $q->where(DB::raw('concat(fname," ",mname," ",lname," ",suffix," ",familyID)'),'like',"%$keyword%")
+                    ->orwhere(DB::raw('concat(fname," ",lname," ",suffix," ",familyID)'),'like',"%$keyword%")
+                    ->orwhere(DB::raw('concat(lname," ",fname," ",mname," ",suffix," ",familyID)'),'like',"%$keyword%");
+            });
+        }
+
+        if($head || $head!='' || $head!=null)
+        {
+            $data['profiles'] = $data['profiles']->where('head',$head);
+        }
+
+        if($sex || $sex!='' || $sex!=null)
+        {
+            if($sex!=='non')
+            {
+                $data['profiles'] = $data['profiles']->where('sex',$sex);
+            }else{
+                $data['profiles'] = $data['profiles']->where('sex','');
+            }
+        }
+
+        if($barangay || $barangay!='' || $barangay!=null)
+        {
+            $data['profiles'] = $data['profiles']->where('profile.barangay_id',$barangay);
+        }
+
+        $data['profiles'] = $data['profiles']->where('province_id',$provinceId)->where('muncity_id',$municipalityId);
+
+        $data['profiles'] = $data['profiles']->orderBy('lname','asc');
+        if($user->user_priv == 2){
+            $tmpBrgy = UserBrgy::where('user_id',Auth::user()->id)->get();
+            $data['profiles'] = $data['profiles']->where(function($q) use ($tmpBrgy){
+                foreach($tmpBrgy as $tmp){
+                    $q->orwhere('profile.barangay_id',$tmp->barangay_id);
+                }
+            });
+            if(count($tmpBrgy)==0){
+                $data['profiles'] = $data['profiles']->where('profile.barangay_id',0);
+            }
+        }
+
+        //return $data['profiles']->count();
+        $data['profiles'] = $data['profiles']->orderBy('head','desc')
+            ->paginate(20);
+
+        return view('population.manage_population',$data);
+    }
+
+    public function searchPopulation($provinceId,$municipalityId,Request $req){
+        $data['provinceId'] = $provinceId;
+        $data['municipalityId'] = $municipalityId;
+
+        if($req->viewAll){
+            Session::forget('profileKeyword');
+            return redirect()->back();
+        }
+        $data = array(
+            'keyword' => $req->keyword,
+            'familyHead' => $req->familyHead,
+            'sex' => $req->sex,
+            'barangay' => $req->barangay
+        );
+        Session::put('profileKeyword',$data);
+        return self::population($provinceId,$municipalityId);
+    }
+
     static function getTarget($level,$id)
     {
         $target = Barangay::select(DB::raw("SUM(target) as count"));
