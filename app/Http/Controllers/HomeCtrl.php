@@ -32,14 +32,14 @@ class HomeCtrl extends Controller
         $user_priv = Auth::user()->user_priv;
 
         if($type=='countBarangay'){
-            if($user_priv==1){
+            if($user_priv==1 || $user_priv==7){
                 $countBarangay = Barangay::count();
             }else if($user_priv==3){
                 $countBarangay = Barangay::where('province_id',$province_id)->count();
             }
             return array('countBarangay' => number_format($countBarangay));
         }else if($type=='target'){
-            if($user_priv==1){
+            if($user_priv==1 || $user_priv==7){
                 $old_target = Barangay::select(DB::raw("SUM(old_target) as count"))->first()->count;
                 $target = Barangay::select(DB::raw("SUM(target) as count"))->first()->count;
                 $countPopulation = Profile::count();
@@ -65,11 +65,11 @@ class HomeCtrl extends Controller
                 'old_target' => number_format($old_target)
             );
         }else if($type=='validServices'){
-            if($user_priv==1){
+            if($user_priv==1 || $user_priv==7){
                 $old_target = Barangay::select(DB::raw("SUM(old_target) as count"))->first()->count;
                 $target = Barangay::select(DB::raw("SUM(target) as count"))->first()->count;
                 $validServices = Param::countMustService('');
-            }else if($user_priv==3){
+            }else if($user_priv==3 || $user_priv==7){
                 $old_target = Barangay::select(DB::raw("SUM(old_target) as count"))->where('province_id',$province_id)->first()->count;
                 $target = Barangay::select(DB::raw("SUM(target) as count"))->where('province_id',$province_id)->first()->count;
                 $validServices = Param::countMustService('province');

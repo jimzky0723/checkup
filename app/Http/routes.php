@@ -239,7 +239,6 @@ Route::get('negros',function(){
 
 Route::get('api','ApiCtrl@api');
 Route::post('api/syncprofile','ApiCtrl@syncProfile');
-Route::post('api/syncservices','ApiCtrl@syncServices');
 
 //RUSEL
 Route::get('verify_dengvaxia/{id}/{unique_id}','DengvaxiaController@verify_dengvaxia');
@@ -255,3 +254,10 @@ Route::get('sessionProcessPrint/{id}', 'DengvaxiaController@sessionProcessPrint'
 Route::get('topNdp', 'TopController@index');
 Route::get('crossMatching/{provinceId}/{muncityId}', 'DengvaxiaController@crossMatching');
 Route::get('crossMatchingResult/{provinceId}/{muncityId}', 'TopController@crossMatchingResult');
+
+//CHPHS
+Route::get('chphs/population','ChphsCtrl@population');
+Route::post('chphs/population','ChphsCtrl@searchPopulation');
+
+//EXCEL
+Route::post('importExcel','ExcelCtrl@importExcel');

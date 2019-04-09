@@ -114,7 +114,15 @@
 
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ url('/home') }}"><i class="fa fa-home"></i> Home</a></li>
+                <li>
+                    <a href="{{ url('/home') }}"><i class="fa fa-home"></i> Home</a>
+                </li>
+                @if(Auth::user()->user_priv == '7')
+                <li>
+                    <a href="{{ url('chphs/population') }}"><i class="fa fa-group"></i> CHPHS Population</a>
+                </li>
+                @endif
+                @if(Auth::user()->user_priv == '0' || Auth::user()->user_priv == '1' || Auth::user()->user_priv == '2' || Auth::user()->user_priv == '3' || Auth::user()->user_priv == '4' || Auth::user()->user_priv == '5' || Auth::user()->user_priv == '6')
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-users"></i> Population<span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -153,6 +161,7 @@
 
                     </ul>
                 </li>
+                @endif
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> Account<span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -161,7 +170,6 @@
                         <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out"></i>&nbsp;&nbsp; Logout</a></li>
                     </ul>
                 </li>
-
             </ul>
             {{--<ul class="nav navbar-nav navbar-right">--}}
                 {{--<li class="active"><a href="#send" data-toggle="modal"><i class="fa fa-envelope"></i> Contact Admin</a></li>--}}

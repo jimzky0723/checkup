@@ -66,6 +66,7 @@
                             <option value="4">Dentist</option>
                             <option value="5">Rural Health Unit</option>
                             <option value="6">Hospital</option>
+                            <option value="7">CHPHS Level</option>
                         </select>
                     </div>
                     <div class="form-group">
