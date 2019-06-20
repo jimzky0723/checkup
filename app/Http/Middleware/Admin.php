@@ -16,7 +16,7 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if ( Auth::check() && (Auth::user()->user_priv == 1 || Auth::user()->user_priv == 3) )
+        if ( Auth::check() && (Auth::user()->user_priv == 1 || Auth::user()->user_priv == 3 || Auth::user()->user_priv == 7) )
         {
             return $next($request);
         }

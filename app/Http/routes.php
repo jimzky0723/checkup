@@ -37,6 +37,7 @@ Route::get('dengvaxia/finish/{id}','DengvaxiaCtrl@finish');
 //REPORT
 Route::get('report/status','ReportCtrl@status');
 Route::post('report/status','ReportCtrl@status');
+Route::get('report/crossMatching','ReportCtrl@crossMatching');
 Route::get('report/monthly','ReportCtrl@monthly');
 Route::post('report/monthly','ReportCtrl@monthly');
 Route::get('report/online','ReportCtrl@online');
@@ -94,6 +95,9 @@ Route::get('user/home/chart','ClientCtrl@chart');
 Route::get('user/home/count','ClientCtrl@count');
 
 //end count
+//admin population
+Route::get('admin/population/{provinceId}/{muncityId}','ReportCtrl@population');
+Route::post('admin/population/{provinceId}/{muncityId}','ReportCtrl@searchPopulation');
 //population
 Route::get('user/population','ClientCtrl@population');
 Route::post('user/population','ClientCtrl@searchPopulation');
@@ -242,7 +246,6 @@ Route::get('negros',function(){
 
 Route::get('api','ApiCtrl@api');
 Route::post('api/syncprofile','ApiCtrl@syncProfile');
-Route::post('api/syncservices','ApiCtrl@syncServices');
 
 //RUSEL
 Route::get('verify_dengvaxia/{id}/{unique_id}','DengvaxiaController@verify_dengvaxia');
@@ -258,3 +261,10 @@ Route::get('sessionProcessPrint/{id}', 'DengvaxiaController@sessionProcessPrint'
 Route::get('topNdp', 'TopController@index');
 Route::get('crossMatching/{provinceId}/{muncityId}', 'DengvaxiaController@crossMatching');
 Route::get('crossMatchingResult/{provinceId}/{muncityId}', 'TopController@crossMatchingResult');
+
+//CHPHS
+Route::get('chphs/population','ChphsCtrl@population');
+Route::post('chphs/population','ChphsCtrl@searchPopulation');
+
+//EXCEL
+Route::post('importExcel','ExcelCtrl@importExcel');

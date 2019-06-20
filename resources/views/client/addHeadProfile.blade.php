@@ -182,6 +182,91 @@ $profileID = date('mdy').'-'.$idNo.'-'.$ctrlNo;
                         </td>
                     </tr>
                     <tr>
+                        <td>CHPHS System? :</td>
+                        <td>
+                            <select name="chphs_status" class="form-control" onchange="chphs($(this))" id="chphs_status" style="width: 100%">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>Cluster:</td>
+                        <td>
+                            <select name="cluster" class="form-control" id="" style="width: 100%" required>
+                                @foreach($cluster as $row)
+                                    <option value="{{ $row->id }}">{{ $row->description }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>District:</td>
+                        <td>
+                            <select name="district" class="form-control" id="" style="width: 100%" required>
+                                @foreach($district as $row)
+                                    <option value="{{ $row->id }}">{{ $row->description }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>House No:</td>
+                        <td>
+                            <input type="text" class="form-control" name="house_no" >
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>Street Name:</td>
+                        <td>
+                            <input type="text" class="form-control" name="street_name" >
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>Sition:</td>
+                        <td>
+                            <input type="text" class="form-control" name="sitio" >
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>Purok:</td>
+                        <td>
+                            <input type="text" class="form-control" name="purok" >
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>Blood Type:</td>
+                        <td>
+                            <select name="bloodType" class="form-control" id="" style="width: 100%" >
+                                <option value="A-">A-</option>
+                                <option value="A+">A+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="O">O</option>
+                                <option value="B-">B-</option>
+                                <option value="B+">B+</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>Weight(kg):</td>
+                        <td>
+                            <input type="text" class="form-control" name="weight" >
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>Height(cm):</td>
+                        <td>
+                            <input type="text" class="form-control" name="height" >
+                        </td>
+                    </tr>
+                    <tr class="chphs hide success">
+                        <td>Contact No:</td>
+                        <td>
+                            <input type="text" class="form-control" name="contact_no" >
+                        </td>
+                    </tr>
+                    <tr>
                         <td></td>
                         <td>
                             <a href="{{ asset('user/population') }}" class="btn btn-sm btn-default">
@@ -228,6 +313,14 @@ $profileID = date('mdy').'-'.$idNo.'-'.$ctrlNo;
                 $('#unmet').val('0');
                 $('#unmet2').val('Not set');
             }
+        }
+
+        chphs($("#chphs_status"));
+        function chphs(data){
+            if(data.val() == "yes")
+                $(".chphs").removeClass("hide");
+            else
+                $(".chphs").addClass("hide");
         }
     </script>
 @endsection

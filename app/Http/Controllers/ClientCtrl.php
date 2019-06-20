@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Barangay;
+use App\BloodType;
+use App\Cluster;
+use App\District;
+use App\Muncity;
 use App\Profile;
 use App\Service;
 use App\ServiceGroup;
@@ -202,7 +206,14 @@ class ClientCtrl extends Controller
 
     public function addPopulation($id)
     {
-        return view('client.addProfile',['id' => $id]);
+        $cluster = Cluster::get();
+        $district = District::get();
+        return view('client.addProfile',
+            [
+                'id' => $id,
+                'cluster' => $cluster,
+                'district' => $district
+            ]);
     }
 
     public function savePopulation(Request $req)
@@ -213,10 +224,89 @@ class ClientCtrl extends Controller
         $mname = ($req->mname);
         $lname = ($req->lname);
         $unique_id = $fname.''.$mname.''.$lname.''.$req->suffix.''.$req->barangay.''.$user->muncity;
-        $q = "INSERT INTO profile(unique_id, familyID, head, relation, fname,mname,lname,suffix,dob,sex,unmet,barangay_id,muncity_id,province_id, created_at, updated_at, phicID, nhtsID, education)
-                VALUES('$unique_id', '$req->familyID', 'NO', '$req->relation', '".$fname."',
-                '".$mname."','".$lname."','$req->suffix','".date('Y-m-d',strtotime($req->dob))."','$req->sex','$req->unmet',
-                '$req->barangay','$user->muncity','$user->province','$dateNow','$dateNow','$req->phicID','$req->nhtsID','$req->education')
+
+        //CAPITOL
+        $cluster_no = $req->cluster;
+        $district_no = $req->district;
+        $height = addslashes($req->height);
+        $weight = $req->weight;
+        $bloodType = $req->bloodType;
+        $contact_no = $req->contact_no;
+        $house_no = $req->house_no;
+        $street_name = $req->street_name;
+        $sitio = $req->sitio;
+        $purok = $req->purok;
+        $chphs_mun_no = Muncity::find($user->muncity)->chphs_mun_no;
+        $chphs_brg_no = Barangay::where("province_id","=",$user->province)->where("muncity_id","=",$user->muncity)->where("id","=",$req->barangay)->first()->chphs_brg_no;
+        $chphs_no = $req->cluster.'-'.$req->district.'-'.$chphs_mun_no.'-'.$chphs_brg_no.'-'.strtotime($dateNow).'-'.$user->id;
+        $chphs_status = $req->chphs_status;
+        //
+
+        $q = "INSERT INTO profile(
+                unique_id,
+                familyID,
+                head,
+                relation,
+                fname,
+                mname,
+                lname,
+                suffix,
+                dob,
+                sex,
+                unmet,
+                barangay_id,
+                muncity_id,
+                province_id,
+                created_at,
+                updated_at,
+                phicID,
+                nhtsID, 
+                education,
+                cluster_no,
+                district_no,
+                height,
+                weight,
+                blood_type,
+                contact_no,
+                house_no,
+                street_name,
+                sitio,
+                purok,
+                chphs_no,
+                chphs_status
+                )
+                VALUES(
+                '$unique_id',
+                '$req->familyID',
+                'NO', 
+                '$req->relation',
+                '".$fname."',
+                '".$mname."',
+                '".$lname."',
+                '$req->suffix',
+                '".date('Y-m-d',strtotime($req->dob))."',
+                '$req->sex','$req->unmet',
+                '$req->barangay',
+                '$user->muncity',
+                '$user->province',
+                '$dateNow',
+                '$dateNow',
+                '$req->phicID',
+                '$req->nhtsID',
+                '$req->education',
+                '$cluster_no',
+                '$district_no',
+                '$height',
+                '$weight',
+                '$bloodType',
+                '$contact_no',
+                '$house_no',
+                '$street_name',
+                '$sitio',
+                '$purok',
+                '$chphs_no',
+                '$chphs_status'
+                )
             ON DUPLICATE KEY UPDATE
                 familyID = '$req->familyID',
                 sex = '$req->sex',
@@ -244,9 +334,15 @@ class ClientCtrl extends Controller
 
         return redirect()->back()->with('status','added');
     }
+
     public function addHeadProfile()
     {
-        return view('client.addHeadProfile');
+        $cluster = Cluster::get();
+        $district = District::get();
+        return view('client.addHeadProfile',[
+            "cluster" => $cluster,
+            "district" => $district
+        ]);
     }
 
     public function saveHeadProfile(Request $req)
@@ -257,10 +353,98 @@ class ClientCtrl extends Controller
         $mname = ($req->mname);
         $lname = ($req->lname);
         $unique_id = $fname.''.$mname.''.$lname.''.$req->suffix.''.$req->barangay.''.$user->muncity;
-        $q = "INSERT IGNORE profile(unique_id, familyID, head, relation, fname,mname,lname,suffix,dob,sex,barangay_id,muncity_id,province_id,created_at,updated_at,phicID, nhtsID, income, unmet, water, toilet, education)
-                VALUES('$unique_id', '$req->familyProfile', 'YES', 'Head', '".$fname."',
-                '".$mname."','".$lname."','$req->suffix','".date('Y-m-d',strtotime($req->dob))."','$req->sex',
-                '$req->barangay','$user->muncity','$user->province','$dateNow','$dateNow','$req->phicID', '$req->nhtsID', '$req->income', '$req->unmet', '$req->water', '$req->toilet', '$req->education')
+
+        //CAPITOL
+        $cluster_no = $req->cluster;
+        $district_no = $req->district;
+        $height = addslashes($req->height);
+        $weight = $req->weight;
+        $bloodType = $req->bloodType;
+        $contact_no = $req->contact_no;
+        $house_no = $req->house_no;
+        $street_name = $req->street_name;
+        $sitio = $req->sitio;
+        $purok = $req->purok;
+        $chphs_mun_no = Muncity::find($user->muncity)->chphs_mun_no;
+        $chphs_brg_no = Barangay::where("province_id","=",$user->province)->where("muncity_id","=",$user->muncity)->where("id","=",$req->barangay)->first()->chphs_brg_no;
+        $chphs_no = $req->cluster.'-'.$req->district.'-'.$chphs_mun_no.'-'.$chphs_brg_no.'-'.strtotime($dateNow).'-'.$user->id;
+        $chphs_status = $req->chphs_status;
+        //
+
+        $q = "INSERT IGNORE profile
+                (
+                    unique_id, 
+                    familyID, 
+                    head, 
+                    relation, 
+                    fname,
+                    mname,
+                    lname,
+                    suffix,
+                    dob,
+                    sex,
+                    barangay_id,
+                    muncity_id,
+                    province_id,
+                    created_at,
+                    updated_at,
+                    phicID, 
+                    nhtsID, 
+                    income, 
+                    unmet, 
+                    water, 
+                    toilet, 
+                    education,
+                    cluster_no,
+                    district_no,
+                    height,
+                    weight,
+                    blood_type,
+                    contact_no,
+                    house_no,
+                    street_name,
+                    sitio,
+                    purok,
+                    chphs_no,
+                    chphs_status
+                )
+                VALUES
+                (
+                    '$unique_id',
+                    '$req->familyProfile',
+                    'YES',
+                    'Head',
+                    '".$fname."',
+                    '".$mname."',
+                    '".$lname."',
+                    '$req->suffix',
+                    '".date('Y-m-d',strtotime($req->dob))."',
+                    '$req->sex',
+                    '$req->barangay',
+                    '$user->muncity',
+                    '$user->province',
+                    '$dateNow',
+                    '$dateNow',
+                    '$req->phicID', 
+                    '$req->nhtsID', 
+                    '$req->income', 
+                    '$req->unmet', 
+                    '$req->water', 
+                    '$req->toilet', 
+                    '$req->education',
+                    '$cluster_no',
+                    '$district_no',
+                    '$height',
+                    '$weight',
+                    '$bloodType',
+                    '$contact_no',
+                    '$house_no',
+                    '$street_name',
+                    '$sitio',
+                    '$purok',
+                    '$chphs_no',
+                    '$chphs_status'
+                )
             ";
         //echo $q;
         DB::select($q);

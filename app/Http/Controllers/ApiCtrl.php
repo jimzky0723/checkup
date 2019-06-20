@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use App\Dengvaxia;
+use App\Cluster;
+use App\District;
 
 
 class ApiCtrl extends Controller
@@ -24,19 +26,22 @@ class ApiCtrl extends Controller
     {
         $req = Input::get('r');
         if($req==='login')
-        {
             return self::login();
-        }else if($req==='countProfile'){
+        else if($req==='countProfile')
             return self::countProfile();
-        }else if($req==='profile'){
+        else if($req==='profile')
             return self::getProfiles();
-        }else if($req==='version'){
+        else if($req==='version')
             return self::getversion();
-        }else if($req==='mustservices'){
+        else if($req==='mustservices')
             return self::getMustServices();
-        }else if($req==='countmustservices'){
+        else if($req==='countmustservices')
             return self::countMustServices();
-        }else if($req==='getToken'){
+        else if($req==='cluster')
+            return Cluster::select("cluster.cluster_no","cluster.description")->get();
+        else if($req==='district')
+            return District::select("district.district_no","district.description")->get();
+        else if($req==='getToken'){
             return array(
                 '_token' => csrf_token()
             );
@@ -194,6 +199,27 @@ class ApiCtrl extends Controller
         $brgy = Barangay::find($data['barangay_id']);
         $muncity_id = $brgy->muncity_id;
         $province_id = $brgy->province_id;
+
+        //CAPITOL
+        $cluster_no = $data['cluster_no'];
+        $district_no = $data['district_no'];
+        $height = addslashes($data['height']);
+        $weight = $data['weight'];
+        $bloodType = $data['blood_type'];
+        $contact_no = $data['contact_no'];
+        $house_no = $data['house_no'];
+        $street_name = $data['street_name'];
+        $sitio = $data['sitio'];
+        $purok = $data['purok'];
+        $chphs_mun_no = Muncity::find($check->muncity)->chphs_mun_no;
+        $chphs_brg_no = Barangay::where("province_id","=",$check->province)->where("muncity_id","=",$check->muncity)->where("id","=",$data['barangay_id'])->first()->chphs_brg_no;
+        $chphs_no = $data['cluster_no'].'-'.$data['district_no'].'-'.$chphs_mun_no.'-'.$chphs_brg_no.'-'.strtotime($dateNow).'-'.$check->id;
+        if(empty($cluster_no))
+            $chphs_status = 'no';
+        else
+            $chphs_status = 'yes';
+        //
+
         $q = "INSERT INTO profile(
                   unique_id,
                   familyID,
@@ -216,7 +242,19 @@ class ApiCtrl extends Controller
                   unmet,
                   water,
                   toilet,
-                  education
+                  education,
+                  cluster_no,
+                  district_no,
+                  height,
+                  weight,
+                  blood_type,
+                  contact_no,
+                  house_no,
+                  street_name,
+                  sitio,
+                  purok,
+                  chphs_no,
+                  chphs_status
                   )
                 VALUES(
                   '".$data['unique_id']."',
@@ -234,13 +272,18 @@ class ApiCtrl extends Controller
                   '$province_id',
                   '$dateNow',
                   '$dateNow',
-                  '".$data['phicID']."',
-                  '".$data['nhtsID']."',
-                  '".$data['income']."',
-                  '".$data['unmet']."',
-                  '".$data['water']."',
-                  '".$data['toilet']."',
-                  '".$data['education']."'
+                  '$cluster_no',
+                  '$district_no',
+                  '$height',
+                  '$weight',
+                  '$bloodType',
+                  '$contact_no',
+                  '$house_no',
+                  '$street_name',
+                  '$sitio',
+                  '$purok',
+                  '$chphs_no',
+                  '$chphs_status'
                   )
             ON DUPLICATE KEY UPDATE
                 familyID = '".$data['familyID']."',

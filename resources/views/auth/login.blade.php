@@ -31,7 +31,7 @@
     <div class="login-logo">
         <img src="{{ asset('resources/img/logo.png') }}" />
         <br />
-        <a href="#"><b>PHA</b> CHECK-UP</a>
+        <a href="#"><b>PHA</b> CHECK-UP LOGIN</a>
     </div><!-- /.login-logo -->
 
     <form role="form" method="POST" action="{{ url('/login') }}">

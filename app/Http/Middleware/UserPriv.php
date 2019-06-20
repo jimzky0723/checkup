@@ -16,11 +16,10 @@ class UserPriv
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check()){
-            if(Auth::user()->user_priv != 1) {
-                return redirect('user/home');
-            }
+        if(Auth::check() && (Auth::user()->user_priv == 1 || Auth::user()->user_priv == 7)){
+            return $next($request);
         }
-        return $next($request);
+        return redirect('user/home');
+
     }
 }

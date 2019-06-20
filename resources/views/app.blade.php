@@ -114,12 +114,39 @@
 
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ url('/home') }}"><i class="fa fa-home"></i> Home</a></li>
+                <li>
+                    <a href="{{ url('/home') }}"><i class="fa fa-home"></i> Home</a>
+                </li>
+                @if(Auth::user()->user_priv == '7')
+                <li>
+                    <a href="{{ url('chphs/population') }}"><i class="fa fa-group"></i> CHPHS Population</a>
+                </li>
+                @endif
+                @if(Auth::user()->user_priv == '0' || Auth::user()->user_priv == '1' || Auth::user()->user_priv == '2' || Auth::user()->user_priv == '3' || Auth::user()->user_priv == '4' || Auth::user()->user_priv == '5' || Auth::user()->user_priv == '6')
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-users"></i> Population<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url('population') }}"><i class="fa fa-users"></i>&nbsp;&nbsp; List of Population</a></li>
-                        <li><a href="{{ asset('population/less')  }}"><i class="fa fa-user-times"></i>&nbsp;&nbsp; Lacking 3 MUST Services<br />(PE, Laboratory and Other Services)</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-submenu">
+                            <a href="#"><i class="fa fa-building"></i>&nbsp;&nbsp; Manage Population</a>
+                            <ul class="dropdown-menu">
+                                @foreach(\App\Province::get() as $pro)
+                                    <li class="dropdown-submenu">
+                                        <a href="#" data-toggle="dropdown"><i class="fa fa-file"></i> {{ $pro->description }}</a>
+                                        <ul class="dropdown-menu">
+                                            @foreach(\App\Muncity::where('province_id','=',$pro->id)->get() as $mun)
+                                                <li><a href="{{ url('admin/population/'.$pro->id.'/'.$mun->id) }}"><i class="fa fa-sticky-note"></i> {{ $mun->description }} </a></li>
+                                                <li class="divider"></li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                    <li class="divider"></li>
+                                @endforeach
+                            </ul>
+                        </li>
+
+                        <!-- <li><a href="{{ asset('population/less')  }}"><i class="fa fa-user-times"></i>&nbsp;&nbsp; Lacking 3 MUST Services<br />(PE, Laboratory and Other Services)</a></li> -->
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -127,6 +154,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ asset('/report/status')  }}"><i class="fa fa-table"></i>&nbsp;&nbsp; Status Report</a></li>
                         <li><a href="{{ asset('/report/monthly') }}"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; Monthly Report</a></li>
+                        <li><a href="{{ asset('/report/crossMatching') }}"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; Cross Matching Report</a></li>
                     </ul>
                 </li>
                 @if(Auth::user()->user_priv==1)
@@ -153,6 +181,7 @@
 
                     </ul>
                 </li>
+                @endif
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> Account<span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -161,7 +190,6 @@
                         <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out"></i>&nbsp;&nbsp; Logout</a></li>
                     </ul>
                 </li>
-
             </ul>
             {{--<ul class="nav navbar-nav navbar-right">--}}
                 {{--<li class="active"><a href="#send" data-toggle="modal"><i class="fa fa-envelope"></i> Contact Admin</a></li>--}}
