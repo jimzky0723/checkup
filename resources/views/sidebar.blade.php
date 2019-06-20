@@ -42,7 +42,7 @@
                 <?php $validBrgy = \App\Http\Controllers\UserCtrl::validateBrgy();?>
                 @if($validBrgy)
                 <li class="list-group-item">
-                    <a href="{{ url('/resources/apk/PHA Check-App.apk') }}" target="_blank" class="btn btn-warning col-xs-12">
+                    <a href="{{ url('/resources/apk/PHA Check-App.apk') }}" class="btn btn-warning col-xs-12">
                         <i class="fa fa-android"></i> PHA Check-App v2.0
                     </a>
                     <div class="clearfix"></div>
